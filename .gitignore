@@ -11,3 +11,5 @@ src/_tmp*.py
 **/__pycache__/
 *Icon?
 *__pycache__
+**/__MACOSX/
+data.zip

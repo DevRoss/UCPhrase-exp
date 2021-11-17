@@ -33,8 +33,9 @@ class Preprocessor:
 
         # tokenize
         # NOTE: add space before each raw sentence to tokenize the first token with GPT_TOKEN for phrase matching
+        # 如果单词前面是空格，就会在前面加个Ġ
         tokenized_sents = [consts.LM_TOKENIZER.tokenize(' ' + s, add_special_tokens=False) for s in sents]
-        cleaned_tokenized_sents = []
+        cleaned_tokenized_sents = [] # 窗口切分之后的token
         for tokens in tokenized_sents:
             tokens_batch = utils.get_batches(tokens, batch_size=consts.MAX_SENT_LEN)
             cleaned_tokenized_sents += tokens_batch

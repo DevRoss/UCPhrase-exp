@@ -1,4 +1,4 @@
-pip install -r ./requirements.txt
+python -m pip install -r ./requirements.txt
 
 cd ./src/match
 bash build.sh

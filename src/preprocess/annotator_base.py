@@ -22,7 +22,7 @@ class BaseAnnotator:
         for sent in sents:
             phrases = sent['phrases']
             assert phrases
-            positive_spans = [tuple(phrase[0]) for phrase in phrases]
+            positive_spans = [tuple(phrase[0]) for phrase in phrases] # phrase [[start_index, end_index], 'string']
             num_positive = len(positive_spans)
             # sample negatives
             word_idxs = sent['widxs']
@@ -44,7 +44,7 @@ class BaseAnnotator:
             return path_output
 
         marked_docs = utils.JsonLine.load(self.path_marked_corpus)
-        sampled_docs = [BaseAnnotator._par_sample_train_data(d) for d in tqdm(marked_docs, ncols=100, desc='[Sample Train]')]
+        sampled_docs = [BaseAnnotator._par_sample_train_data(d) for d in tqdm(marked_docs, ncols=100, desc='[Sample Train]')] # 句子内phrase负采样
         utils.JsonLine.dump(sampled_docs, path_output)
         return path_output
 
