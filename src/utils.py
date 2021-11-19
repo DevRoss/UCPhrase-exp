@@ -51,6 +51,55 @@ def get_possible_spans(word_idxs, num_wordpieces, max_word_gram, max_subword_gra
     return possible_spans
 
 
+class KMP:
+    @staticmethod
+    def kmp(main_str, pattern):
+        """
+        Kmp algorithm to get the begin index of slot in text if matching
+        return: List[int] a list of begin index
+        """
+        results = []
+        if not main_str or not pattern:
+            return results
+        nex = KMP.get_next(pattern)
+        i = 0  # the pointer of main_str
+        j = 0  # the pointer of pattern
+
+        while i < len(main_str):
+            while i < len(main_str) and j < len(pattern):
+                if j == -1 or main_str[i] == pattern[j]:
+                    i += 1
+                    j += 1
+                else:
+                    j = nex[j]
+
+            if j == len(pattern):  # matched
+                results.append(i - j)
+                i += 1
+                j = 0
+            else:
+                break
+        return results
+
+    @staticmethod
+    def get_next(pattern):
+        """
+        """
+        nex = [0] * len(pattern)
+        nex[0] = -1
+        i = 0
+        j = -1
+        while i < len(pattern) - 1:  # len(pattern)-1防止越界，因为nex前面插入了-1
+            if j == -1 or pattern[i] == pattern[j]:
+                i += 1
+                j += 1
+                nex[i] = j  # 这是最大的不同：记录next[i]
+            else:
+                j = nex[j]
+
+        return nex
+
+
 class Log:
     @staticmethod
     def info(message):
@@ -226,10 +275,9 @@ class Process:
     @staticmethod
     def par(func, iterables, num_processes, desc=''):
         pool = multiprocessing.Pool(processes=num_processes)
-        pool_func = pool.imap(func=func, iterable=iterables)
-        pool_func = tqdm(pool_func, total=len(iterables), ncols=100, desc=desc)
-        # results = list(pool_func)
-        results = [r for r in pool_func]
+        results = []
+        for r in tqdm(pool.imap(func=func, iterable=iterables), total=len(iterables), ncols=100, desc=desc):
+            results.append(r)
         pool.close()
         pool.join()
         return results

@@ -57,11 +57,14 @@ class FeatureExtractor(BaseFeatureExtractor):
         print('OK!')
         marked_sents = [sent for doc in sampled_docs for sent in doc['sents']]
         marked_sents = sorted(marked_sents, key=lambda s: len(s['ids']), reverse=True)
+        marked_sents_id = [[sent, doc['_id_']] for doc in sampled_docs for sent in doc['sents']]
+        marked_sents_id = sorted(marked_sents_id, key=lambda s: len(s[0]['ids']), reverse=True)
         model_outputs = self._get_model_outputs(marked_sents)
 
         train_instances = []
         for i, model_output_dict in tqdm(enumerate(model_outputs), ncols=100, total=len(marked_sents), desc='[Feature] Generate train instances'):
             marked_sent = marked_sents[i]
+            marked_sent_id = marked_sents_id[i]
             word_idxs = marked_sent['widxs']
             swidx2widx = {swidx: widx for widx, swidx in enumerate(word_idxs)}
             swidx2widx.update({len(marked_sent['ids']): len(swidx2widx)})

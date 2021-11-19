@@ -1,0 +1,15 @@
+{
+    "lm_name": "bert-base-chinese",
+    "path_tagging_docs": "./standard/toy.tagging.docs.jsonl",
+    "paths_tagging_human": [
+        "./standard/toy.tagging.human_0.json"
+    ],
+    "path_test": "./standard/toy.test.jsonl",
+    "path_train": "./standard/toy.train.jsonl",
+    "path_phrase": "../wiki_quality.txt",
+    "path_stopwords": "../baidu_stopwords.txt",
+    "path_stem_test": "./standard/stem.toy.test.jsonl",
+    "path_stem_train": "./standard/stem.toy.train.jsonl",
+    "path_stem_doc2references": "./standard/stem.doc2references.json",
+    "kp_num_candidates_per_doc": 18.3
+}

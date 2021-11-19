@@ -1,4 +1,6 @@
 from preprocess.preprocess import Preprocessor
+from preprocess.preprocess import ZhBertProcessor
 from preprocess.annotator_base import BaseAnnotator
 from preprocess.annotator_wiki import WikiAnnotator
 from preprocess.annotator_core import CoreAnnotator
+from preprocess.annotator_zh_sup import ZhSupervisedAnnotator

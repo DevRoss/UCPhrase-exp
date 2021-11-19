@@ -210,7 +210,7 @@ class BaseFeatureExtractor:
                     possible_spans_batch.append(possible_spans)
                 len_diff = maxlen - len(input_id)
                 assert len_diff >= 0, 'Input ids must have been sorted!'
-                input_ids_batch.append([consts.LM_TOKENIZER.bos_token_id] + input_id + [consts.LM_TOKENIZER.pad_token_id] * len_diff)
+                input_ids_batch.append([consts.LM_TOKENIZER.cls_token_id] + input_id + [consts.LM_TOKENIZER.pad_token_id] * len_diff)
                 input_masks_batch.append([1] + [1] * len(input_id) + [0] * len_diff)
                 if is_train:
                     pos_spans = marked_sent['pos_spans']

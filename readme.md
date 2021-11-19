@@ -23,11 +23,11 @@ Facts: UCPhrase is a joint work by researchers from UI at **U**rbana **C**hampai
 
 
 ## Quick Start
-### Step 1: Download and unzip the data folder
+### Step 1: Download bert-base-chinese in huggingface
 
 ```
-wget https://www.dropbox.com/s/1bv7dnjawykjsji/data.zip?dl=0 -O data.zip
-unzip -n data.zip
+git lfs install
+git clone https://huggingface.co/bert-base-chinese
 ```
 
 ### Step 2: Install and compile dependencies
@@ -40,11 +40,11 @@ bash build.sh
 
 ```bash
 cd src
-python exp.py --gpu 0 --dir_data ../data/devdata
+python exp_zh.py --gpu 0 --dir_data ../data/toy
 ```
 
 
-The result files are organized under `experiments/${expname}/model`:
+The result files are organized under `experiments_zh/${expname}/model`:
 
 - `kpcand.decoded.epoch-${best_epoch}/eval.doc2cands-xxx.json`
   - results of document-level candidate phrase extraction in the form of "docid": [phrases].

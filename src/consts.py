@@ -4,7 +4,7 @@ import argparse
 import transformers
 from pathlib import Path
 from functools import lru_cache
-
+import os
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -13,6 +13,7 @@ def parse_args():
     parser.add_argument("--exp_prefix", type=str, default='', help='additional exp name')
     parser.add_argument("--model_prefix", type=str, default='', help='additional model name')
     parser.add_argument("--path_model_config", type=str, default='../configs/core.CNN.3layers.json')
+    parser.add_argument("--use_zh_tokenizer", action="store_true")
     args = parser.parse_args()
     return args
 
@@ -47,16 +48,21 @@ DIR_DATA = Path(ARGS.dir_data)
 PATH_DATA_CONFIG = DIR_DATA / 'config.json'
 DATA_CONFIG = DataConfig(PATH_DATA_CONFIG)
 PATH_MODEL_CONFIG = Path(ARGS.path_model_config)
-STEM_DOC2REFS = {doc: {g for g in golds if len(g.split()) > 1} for doc, golds in utils.Json.load(DATA_CONFIG.path_stem_doc2references).items()}
-DOCIDS_WITH_GOLD = {doc for doc, golds in STEM_DOC2REFS.items() if golds}  # Task 2 evaluation is performed on docs with gold keyphrases
+# STEM_DOC2REFS = {doc: {g for g in golds if len(g.split()) > 1} for doc, golds in utils.Json.load(DATA_CONFIG.path_stem_doc2references).items()}
+# DOCIDS_WITH_GOLD = {doc for doc, golds in STEM_DOC2REFS.items() if golds}  # Task 2 evaluation is performed on docs with gold keyphrases
 
 # huggingface LM
+ZH_SUBWORD_TOKEN = '##'
 GPT_TOKEN = 'Ġ'
 LM_NAME = DATA_CONFIG.lm_name
 LM_NAME_SUFFIX = LM_NAME.split('/')[-1]
 DEVICE = utils.get_device(ARGS.gpu)
-LM_MODEL = transformers.RobertaModel.from_pretrained(LM_NAME).eval().to(DEVICE)
-LM_TOKENIZER = transformers.RobertaTokenizerFast.from_pretrained(LM_NAME)
+LM_MODEL = transformers.BertModel.from_pretrained(LM_NAME).eval().to(DEVICE)
+if ARGS.use_zh_tokenizer:
+    from tokenization import SeqFullTokenizer
+    LM_TOKENIZER = SeqFullTokenizer(os.path.join(LM_NAME, 'vocab.txt'))
+else:
+    LM_TOKENIZER = transformers.BertTokenizerFast.from_pretrained(LM_NAME, do_lower_case=True)
 print(f'[consts] Loading pretrained model: {LM_NAME} OK!')
 
 # html visualization
@@ -65,7 +71,7 @@ HTML_EP = '</span>'
 
 # settings
 MAX_SENT_LEN = 64
-MAX_WORD_GRAM = 5
+MAX_WORD_GRAM = 10
 MAX_SUBWORD_GRAM = 10
 NEGATIVE_RATIO = 1
 
